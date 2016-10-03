@@ -4,6 +4,7 @@ import processing.core.PFont;
 
 import java.util.ArrayList;
 import java.util.IntSummaryStatistics;
+import java.util.LinkedList;
 
 public class SiteView extends PApplet
 {
@@ -17,6 +18,8 @@ public class SiteView extends PApplet
     private int bg;
     private PumpingSite p;
     Pump[] pumps;
+    LinkedList<Pipe> pipes;
+    boolean pump_selected;
 
     public void setup()
     {
@@ -30,16 +33,23 @@ public class SiteView extends PApplet
         p.getSiteDescription("site.txt");
         p.collectionPoint();
         pumps = new Pump[p.pumpCount()];
+        pipes = new LinkedList<>();
         int radius = width/4;
         for (int i = 0; i < pumps.length; i++)
         {
             int x = (int)(radius*cos(i*1f) + width/2 + 80);
             int y = (int)(radius*sin(i*1f) + height/2);
             pumps[i] = new Pump(x, y, 30, i, p.getPumpConnections(i));
+//            for (Pipe p : pipes)
+//            {
+//                if (!(p.x == pumps[i].x && p.y == pumps[i].y))
+//                {
+//                    pipes.add(new Pipe(pumps[i].x))
+//                }
+//            }
         }
         pumps[p.getBest_point()].color = color(0,255,0);
-        System.out.println(p.getBest_point());
-        noStroke();
+
     }
 
     public void draw()
@@ -73,12 +83,13 @@ public class SiteView extends PApplet
     /**
      * Represents a Natural Gas Pump
      */
-    public class Pump
+    private class Pump
     {
         int x, y, r = 0;
         int color;
         ArrayList<Integer> connections;
         int id;
+        boolean selected;
 
         Pump(int x, int y, int r, int id, ArrayList<Integer> connections)
         {
@@ -105,15 +116,22 @@ public class SiteView extends PApplet
 
         void update()
         {
-
-//            if (pointBall(mouseX, mouseY, this.x, this.y, this.r))
-//            {
-//                this.color = color(160);
-//            }
-//            else
-//            {
-//                this.color = color(0);
-//            }
+            if (pointBall(mouseX, mouseY, this.x, this.y, this.r))
+            {
+                if (mousePressed && !pump_selected)
+                {
+                    this.selected = true;
+                    pump_selected = true;
+                }
+            }
+            if (selected)
+            {
+                if (mousePressed)
+                {
+                    this.x = mouseX;
+                    this.y = mouseY;
+                }
+            }
         }
 
         boolean pointBall(int px, int py, int bx, int by, int bSize)
@@ -124,5 +142,48 @@ public class SiteView extends PApplet
             return (bSize / 2 > distance);
         }
 
+    }
+
+    /**
+     * Represents a Natural Gas Pump
+     */
+    private class Pipe
+    {
+        int x, y = 0;
+        int color;
+        ArrayList<Integer> connections;
+        int id;
+        boolean selected;
+
+        Pipe(int x, int y, ArrayList<Integer> connections)
+        {
+            this.x = x;
+            this.y = y;
+            this.color = color(0);
+            this.connections = connections;
+        }
+
+        void draw()
+        {
+            for (int i = 0; i < connections.size()-1; i++)
+            {
+                line(pumps[connections.get(i)].x, pumps[connections.get(i)].y, pumps[connections.get(i+1)].x, pumps[connections.get(i+1)].y);
+            }
+        }
+
+        void update()
+        {
+
+        }
+
+    }
+
+    public void mouseReleased()
+    {
+        for (Pump pump : pumps)
+        {
+            pump.selected = false;
+            pump_selected = false;
+        }
     }
 }
