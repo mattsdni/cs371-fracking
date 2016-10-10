@@ -12,9 +12,6 @@ public class PumpingSiteTest {
     @org.junit.Test
     public void getSiteDescription() throws Exception {
         assertTrue(p.getSiteDescription("site.txt"));
-        System.out.println(p);
-
-
     }
 
     @org.junit.Test
@@ -22,6 +19,7 @@ public class PumpingSiteTest {
     {
         p.getSiteDescription("site.txt");
         System.out.println(p.collectionPoint());
+        System.out.println(p.route(2));
     }
 
 }

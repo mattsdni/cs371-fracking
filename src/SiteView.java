@@ -1,10 +1,6 @@
-
 import processing.core.PApplet;
 import processing.core.PFont;
-
 import java.util.ArrayList;
-import java.util.IntSummaryStatistics;
-import java.util.LinkedList;
 
 public class SiteView extends PApplet
 {
@@ -14,39 +10,29 @@ public class SiteView extends PApplet
         PApplet.main(new String[]{"SiteView"});
     }
 
-    private PFont f;
     private int bg;
     private PumpingSite p;
-    Pump[] pumps;
-    LinkedList<Pipe> pipes;
-    boolean pump_selected;
+    private Pump[] pumps;
+    private boolean pump_selected;
 
     public void setup()
     {
         size(800, 600);
         bg = color(240, 230, 220);
         ellipseMode(CENTER);
-        f = createFont("Arial", 24, true);
+        PFont f = createFont("Arial", 24, true);
         textFont(f);
         frame.setTitle("Cabot Oil and Gas - Natural Gas Simulator");
         p = new PumpingSite();
         p.getSiteDescription("site.txt");
         p.collectionPoint();
         pumps = new Pump[p.pumpCount()];
-        pipes = new LinkedList<>();
         int radius = width/4;
         for (int i = 0; i < pumps.length; i++)
         {
             int x = (int)(radius*cos(i*1f) + width/2 + 80);
             int y = (int)(radius*sin(i*1f) + height/2);
             pumps[i] = new Pump(x, y, 30, i, p.getPumpConnections(i));
-//            for (Pipe p : pipes)
-//            {
-//                if (!(p.x == pumps[i].x && p.y == pumps[i].y))
-//                {
-//                    pipes.add(new Pipe(pumps[i].x))
-//                }
-//            }
         }
         pumps[p.getBest_point()].color = color(0,255,0);
 
@@ -61,22 +47,6 @@ public class SiteView extends PApplet
         {
             pump.update();
             pump.draw();
-        }
-    }
-
-    public void keyPressed()
-    {
-        if (key == '+')
-        {
-            System.out.println("plus");
-        }
-    }
-
-    public void mousePressed()
-    {
-        if (mouseButton == LEFT)
-        {
-            System.out.println("left click at: " + mouseX + ", " + mouseY);
         }
     }
 
@@ -144,39 +114,6 @@ public class SiteView extends PApplet
 
     }
 
-    /**
-     * Represents a Natural Gas Pump
-     */
-    private class Pipe
-    {
-        int x, y = 0;
-        int color;
-        ArrayList<Integer> connections;
-        int id;
-        boolean selected;
-
-        Pipe(int x, int y, ArrayList<Integer> connections)
-        {
-            this.x = x;
-            this.y = y;
-            this.color = color(0);
-            this.connections = connections;
-        }
-
-        void draw()
-        {
-            for (int i = 0; i < connections.size()-1; i++)
-            {
-                line(pumps[connections.get(i)].x, pumps[connections.get(i)].y, pumps[connections.get(i+1)].x, pumps[connections.get(i+1)].y);
-            }
-        }
-
-        void update()
-        {
-
-        }
-
-    }
 
     public void mouseReleased()
     {

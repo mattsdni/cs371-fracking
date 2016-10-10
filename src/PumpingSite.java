@@ -1,8 +1,18 @@
+//Name: Matt Dennie
+//Assignment: 2
+//Title: Optimize Collection of Natural Gas
+//Course: CSCI 371
+//Semester: Fall, 2016
+//Instructor: Dr. Blaha
+//Date: 10/9/2016
+//Sources consulted: course slides on bfs
+//Program description: calculate best placement for gas holding tank
+//Known Bugs: getSiteDescription and collectionPoint must be run before other methods
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -97,9 +107,6 @@ public class PumpingSite implements PumpingOptimization
                     }
                 }
             }
-            distances = new int[graph_list.length]; // reset value for next pass
-            seen = new boolean[graph_list.length]; // reset value for next pass
-            parents  = new int[graph_list.length]; // reset value for next pass
 
             if (distance < best_distance) // if it's better to start at this pump, update values
             {
@@ -108,6 +115,10 @@ public class PumpingSite implements PumpingOptimization
                 this.best_distances = distances; // set global for other functions to use
                 this.parents = parents;
             }
+
+            distances = new int[graph_list.length]; // reset value for next pass
+            seen = new boolean[graph_list.length]; // reset value for next pass
+            parents  = new int[graph_list.length]; // reset value for next pass
         }
         this.best_point = best_point; // set global for other functions to use
         this.best_distance = best_distance; // set global for other functions to use
@@ -164,7 +175,7 @@ public class PumpingSite implements PumpingOptimization
     @Override
     public String route(int v)
     {
-        String route = "";
+        String route = v + " ";
         while (v != best_point)
         {
             route += parents[v] + " ";
